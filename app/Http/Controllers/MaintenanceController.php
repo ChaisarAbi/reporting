@@ -710,44 +710,50 @@ class MaintenanceController extends Controller
         // Generate chart images and convert to base64
         $chartImages = [];
         
-        // Generate monthly bar chart
-        if ($monthlyStats->count() > 0) {
-            $monthlyChartPath = \App\Helpers\ChartGenerator::generateMonthlyBarChart($monthlyStats, 800, 400);
-            if ($monthlyChartPath && file_exists($monthlyChartPath)) {
-                $chartImages['monthly'] = 'data:image/png;base64,' . base64_encode(file_get_contents($monthlyChartPath));
-                // Clean up temporary file
-                unlink($monthlyChartPath);
+        try {
+            // Generate monthly bar chart
+            if ($monthlyStats->count() > 0) {
+                $monthlyChartPath = \App\Helpers\ChartGenerator::generateMonthlyBarChart($monthlyStats, 800, 400);
+                if ($monthlyChartPath && file_exists($monthlyChartPath)) {
+                    $chartImages['monthly'] = 'data:image/png;base64,' . base64_encode(file_get_contents($monthlyChartPath));
+                    // Clean up temporary file
+                    @unlink($monthlyChartPath);
+                }
             }
-        }
-        
-        // Generate machine breakdown chart
-        if ($machineBreakdowns->count() > 0) {
-            $machineChartPath = \App\Helpers\ChartGenerator::generateMachineBreakdownChart($machineBreakdowns, 800, 400);
-            if ($machineChartPath && file_exists($machineChartPath)) {
-                $chartImages['machine'] = 'data:image/png;base64,' . base64_encode(file_get_contents($machineChartPath));
-                // Clean up temporary file
-                unlink($machineChartPath);
+            
+            // Generate machine breakdown chart
+            if ($machineBreakdowns->count() > 0) {
+                $machineChartPath = \App\Helpers\ChartGenerator::generateMachineBreakdownChart($machineBreakdowns, 800, 400);
+                if ($machineChartPath && file_exists($machineChartPath)) {
+                    $chartImages['machine'] = 'data:image/png;base64,' . base64_encode(file_get_contents($machineChartPath));
+                    // Clean up temporary file
+                    @unlink($machineChartPath);
+                }
             }
-        }
-        
-        // Generate event type chart
-        if ($eventTypeFrequency->count() > 0) {
-            $eventChartPath = \App\Helpers\ChartGenerator::generateEventTypeChart($eventTypeFrequency, 800, 400);
-            if ($eventChartPath && file_exists($eventChartPath)) {
-                $chartImages['event'] = 'data:image/png;base64,' . base64_encode(file_get_contents($eventChartPath));
-                // Clean up temporary file
-                unlink($eventChartPath);
+            
+            // Generate event type chart
+            if ($eventTypeFrequency->count() > 0) {
+                $eventChartPath = \App\Helpers\ChartGenerator::generateEventTypeChart($eventTypeFrequency, 800, 400);
+                if ($eventChartPath && file_exists($eventChartPath)) {
+                    $chartImages['event'] = 'data:image/png;base64,' . base64_encode(file_get_contents($eventChartPath));
+                    // Clean up temporary file
+                    @unlink($eventChartPath);
+                }
             }
-        }
-        
-        // Generate part usage chart
-        if ($partUsage->count() > 0) {
-            $partChartPath = \App\Helpers\ChartGenerator::generatePartUsageChart($partUsage, 600, 400);
-            if ($partChartPath && file_exists($partChartPath)) {
-                $chartImages['part'] = 'data:image/png;base64,' . base64_encode(file_get_contents($partChartPath));
-                // Clean up temporary file
-                unlink($partChartPath);
+            
+            // Generate part usage chart
+            if ($partUsage->count() > 0) {
+                $partChartPath = \App\Helpers\ChartGenerator::generatePartUsageChart($partUsage, 600, 400);
+                if ($partChartPath && file_exists($partChartPath)) {
+                    $chartImages['part'] = 'data:image/png;base64,' . base64_encode(file_get_contents($partChartPath));
+                    // Clean up temporary file
+                    @unlink($partChartPath);
+                }
             }
+        } catch (\Exception $e) {
+            // Log error but don't crash the PDF generation
+            \Log::error('Chart generation error in PDF export: ' . $e->getMessage());
+            // Continue without charts
         }
 
         $data = [

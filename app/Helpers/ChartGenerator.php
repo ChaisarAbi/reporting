@@ -11,12 +11,35 @@ class ChartGenerator
      */
     private static function isGdAvailable()
     {
-        return function_exists('imagecreatetruecolor') && 
-               function_exists('imagecolorallocate') && 
-               function_exists('imagefill') &&
-               function_exists('imageline') &&
-               function_exists('imagepng') &&
-               function_exists('imagedestroy');
+        try {
+            // Check if GD extension is loaded
+            if (!extension_loaded('gd')) {
+                \Log::warning('GD extension is not loaded');
+                return false;
+            }
+            
+            // Check specific GD functions
+            $requiredFunctions = [
+                'imagecreatetruecolor',
+                'imagecolorallocate', 
+                'imagefill',
+                'imageline',
+                'imagepng',
+                'imagedestroy'
+            ];
+            
+            foreach ($requiredFunctions as $function) {
+                if (!function_exists($function)) {
+                    \Log::warning("GD function {$function} is not available");
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Error checking GD availability: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -31,6 +54,12 @@ class ChartGenerator
 
             // Check if GD is available
             if (!self::isGdAvailable()) {
+                return null;
+            }
+
+            // Ensure temp directory exists and is writable
+            if (!self::ensureTempDirectory()) {
+                \Log::error('Cannot create or write to temp directory');
                 return null;
             }
 
@@ -169,6 +198,12 @@ class ChartGenerator
             
             // Check if GD is available
             if (!self::isGdAvailable()) {
+                return null;
+            }
+
+            // Ensure temp directory exists and is writable
+            if (!self::ensureTempDirectory()) {
+                \Log::error('Cannot create or write to temp directory');
                 return null;
             }
             
@@ -326,6 +361,12 @@ class ChartGenerator
             if (!self::isGdAvailable()) {
                 return null;
             }
+
+            // Ensure temp directory exists and is writable
+            if (!self::ensureTempDirectory()) {
+                \Log::error('Cannot create or write to temp directory');
+                return null;
+            }
             
             $image = imagecreatetruecolor($width, $height);
             if (!$image) {
@@ -459,6 +500,12 @@ class ChartGenerator
             if (!self::isGdAvailable()) {
                 return null;
             }
+
+            // Ensure temp directory exists and is writable
+            if (!self::ensureTempDirectory()) {
+                \Log::error('Cannot create or write to temp directory');
+                return null;
+            }
             
             $image = imagecreatetruecolor($width, $height);
             if (!$image) {
@@ -571,6 +618,28 @@ class ChartGenerator
     }
     
     /**
+     * Ensure temp directory exists and is writable
+     */
+    private static function ensureTempDirectory()
+    {
+        $tempDir = storage_path('app/temp');
+        
+        if (!file_exists($tempDir)) {
+            if (!mkdir($tempDir, 0755, true)) {
+                \Log::error('Failed to create temp directory: ' . $tempDir);
+                return false;
+            }
+        }
+        
+        if (!is_writable($tempDir)) {
+            \Log::error('Temp directory is not writable: ' . $tempDir);
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
      * Clean up temporary chart files
      */
     public static function cleanupTempFiles($ageInMinutes = 60)
@@ -585,7 +654,7 @@ class ChartGenerator
         
         foreach ($files as $file) {
             if (filemtime($file) < $cutoffTime) {
-                unlink($file);
+                @unlink($file);
             }
         }
     }
