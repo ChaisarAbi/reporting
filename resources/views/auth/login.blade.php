@@ -45,28 +45,8 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me & Forgot Password -->
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <input id="remember_me" 
-                       type="checkbox" 
-                       class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-navy-300 rounded"
-                       name="remember">
-                <label for="remember_me" class="ml-2 block text-sm text-navy-700">
-                    {{ __('Remember me') }}
-                </label>
-            </div>
-
-            @if (Route::has('password.request'))
-                <a class="text-sm text-teal-600 hover:text-teal-800 font-medium transition-colors duration-200" 
-                   href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-        </div>
-
         <!-- Login Button -->
-        <div>
+        <div class="pt-4">
             <button type="submit" 
                     class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-sm font-medium text-white bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all duration-200 transform hover:-translate-y-0.5">
                 <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
