@@ -22,6 +22,11 @@ class CheckRole
 
         $user = Auth::user();
 
+        // Admin can access any role-protected route
+        if ($user->role === 'admin') {
+            return $next($request);
+        }
+
         if ($user->role !== $role) {
             abort(403, 'Akses ditolak. Anda tidak memiliki izin untuk mengakses halaman ini.');
         }

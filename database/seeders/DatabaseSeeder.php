@@ -52,5 +52,8 @@ class DatabaseSeeder extends Seeder
             MachineSeeder::class,
             BreakdownReportSeeder::class,
         ]);
+
+        // Seed admin user (should be last to avoid conflicts)
+        $this->call(AdminUserSeeder::class);
     }
 }
