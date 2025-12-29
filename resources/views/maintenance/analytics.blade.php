@@ -199,10 +199,20 @@
                 </div>
             </div>
         </div>
+
+        <!-- Part Usage Chart -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Penggunaan Part Terbanyak</h3>
+                <div class="h-64">
+                    <canvas id="partUsageChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Data Tables -->
-    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Top Machines Table -->
         <div class="bg-white shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
@@ -263,6 +273,39 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {{ $eventType->frequency }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part Usage Table -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Penggunaan Part Terbanyak</h3>
+                <div class="overflow-x-auto">
+                    <table id="partUsageTable" class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Part</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Kuantitas</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Penggunaan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($partUsage as $part)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $part->name }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $part->total_quantity }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $part->usage_count }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -409,6 +452,59 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Part Usage Chart
+    const partCtx = document.getElementById('partUsageChart').getContext('2d');
+    const partChart = new Chart(partCtx, {
+        type: 'bar',
+        data: {
+            labels: [
+                @foreach($partUsage as $part)
+                    '{{ $part->name }}',
+                @endforeach
+            ],
+            datasets: [{
+                label: 'Total Kuantitas',
+                data: [
+                    @foreach($partUsage as $part)
+                        {{ $part->total_quantity }},
+                    @endforeach
+                ],
+                backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                borderColor: 'rgb(239, 68, 68)',
+                borderWidth: 1
+            }, {
+                label: 'Jumlah Penggunaan',
+                data: [
+                    @foreach($partUsage as $part)
+                        {{ $part->usage_count }},
+                    @endforeach
+                ],
+                backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                borderColor: 'rgb(59, 130, 246)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Nama Part'
+                    }
+                }
+            }
+        }
+    });
+
 
         // Filter Functions
         function applyFilters() {
@@ -550,6 +646,16 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Event type chart updated');
         }
 
+        // Update Part Usage Chart
+        if (data.partUsage) {
+            console.log('Updating part usage:', data.partUsage);
+            partChart.data.labels = data.partUsage.map(part => part.name);
+            partChart.data.datasets[0].data = data.partUsage.map(part => part.total_quantity);
+            partChart.data.datasets[1].data = data.partUsage.map(part => part.usage_count);
+            partChart.update();
+            console.log('Part usage chart updated');
+        }
+
         // Update statistics
         if (data.stats) {
             console.log('Updating statistics:', data.stats);
@@ -642,6 +748,40 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             eventTypeTableBody.innerHTML = html;
             console.log('Event type table updated');
+        }
+
+        // Update part usage table
+        const partUsageTableBody = document.querySelector('#partUsageTable tbody');
+        if (partUsageTableBody) {
+            let html = '';
+            if (data.partUsage && data.partUsage.length > 0) {
+                data.partUsage.forEach(part => {
+                    html += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                ${part.name}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                ${part.total_quantity}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                ${part.usage_count}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                // Show empty state
+                html = `
+                    <tr>
+                        <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
+                            Tidak ada data untuk filter yang dipilih
+                        </td>
+                    </tr>
+                `;
+            }
+            partUsageTableBody.innerHTML = html;
+            console.log('Part usage table updated');
         }
     }
 
