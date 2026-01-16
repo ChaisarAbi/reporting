@@ -23,6 +23,7 @@ class BreakdownReport extends Model
         'shift',
         'machine_number',
         'problem_area',
+        'position',
         'status',
         'reported_at',
         'repair_start_at',

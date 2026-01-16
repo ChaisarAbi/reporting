@@ -15,7 +15,7 @@ class PartTypeSeeder extends Seeder
     {
         $partTypes = [
             ['name' => 'Cam, Gear'],
-            ['name' => 'Rantal, Belt'],
+            ['name' => 'Rantai, Belt'],
             ['name' => 'Inveter'],
             ['name' => 'Guide'],
             ['name' => 'Counter'],
@@ -56,8 +56,7 @@ class PartTypeSeeder extends Seeder
             ['name' => 'Proximity switch'],
             ['name' => 'Dies, Pisau'],
             ['name' => 'Photoelectric SW'],
-            ['name' => 'Switch operations'],
-            ['name' => 'Sear box'],
+            ['name' => 'Gear box'],
             ['name' => 'Fan color'],
             ['name' => 'Pipa, Selang'],
             ['name' => 'Wire, Terminal'],

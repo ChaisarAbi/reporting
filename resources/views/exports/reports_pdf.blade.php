@@ -99,6 +99,7 @@
                 <th>Pelapor</th>
                 <th>Status</th>
                 <th>Deskripsi</th>
+                <th>Posisi Kerusakan</th>
                 <th>Mulai Perbaikan</th>
                 <th>Selesai Perbaikan</th>
             </tr>
@@ -120,6 +121,7 @@
                     @endif
                 </td>
                 <td>{{ $report->description ? substr($report->description, 0, 50) . '...' : '-' }}</td>
+                <td>{{ $report->position ? substr($report->position, 0, 30) . (strlen($report->position) > 30 ? '...' : '') : '-' }}</td>
                 <td>{{ $report->repair_start_at ? $report->repair_start_at->format('d/m/Y H:i') : '-' }}</td>
                 <td>{{ $report->repair_end_at ? $report->repair_end_at->format('d/m/Y H:i') : '-' }}</td>
             </tr>

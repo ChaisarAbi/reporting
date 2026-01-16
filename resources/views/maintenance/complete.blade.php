@@ -136,9 +136,23 @@
                     </div>
                 </div>
 
+                <!-- Position -->
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Posisi Kerusakan</h3>
+                    <div class="mb-4">
+                        <label for="position" class="block text-sm font-medium text-gray-700">Posisi Kerusakan</label>
+                        <input type="text" name="position" id="position" 
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                               placeholder="Contoh: Gear box depan, Motor belakang, dll.">
+                        @error('position')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
                 <!-- Event Types -->
                 <div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Jenis Kejadian / Kerusakan (41 Item)</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Jenis Kejadian / Kerusakan</h3>
                     <p class="text-sm text-gray-600 mb-4">Pilih jenis kerusakan yang terjadi (bisa lebih dari satu)</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -192,7 +206,7 @@
 
                 <!-- Cause Types -->
                 <div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Penyebab Kerusakan (25 Item)</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Penyebab Kerusakan</h3>
                     <p class="text-sm text-gray-600 mb-4">Pilih penyebab kerusakan (bisa lebih dari satu)</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -211,7 +225,7 @@
 
                 <!-- Parts Replaced -->
                 <div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Part yang Diganti (50 Jenis)</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Part yang Diganti</h3>
                     <p class="text-sm text-gray-600 mb-4">Tambahkan part yang diganti selama perbaikan</p>
                     
                     <div id="parts-container" class="space-y-4">

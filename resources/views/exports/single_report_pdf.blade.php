@@ -295,6 +295,29 @@
                 <div class="info-value">{{ $breakdownReport->machine_operational == 'yes' ? 'Operasional' : 'Tidak Operasional' }}</div>
             </div>
             @endif
+            @if($breakdownReport->position)
+            <div class="info-item">
+                <div class="info-label">Posisi Kerusakan</div>
+                <div class="info-value">{{ $breakdownReport->position }}</div>
+            </div>
+            @endif
+            @if($breakdownReport->repair_action)
+            <div class="info-item">
+                <div class="info-label">Tindakan Perbaikan</div>
+                <div class="info-value">
+                    @php
+                        $repairActionLabels = [
+                            'penggantian_part' => 'Penggantian Part',
+                            'hanya_adjust' => 'Hanya Adjust',
+                            'overhaul' => 'Overhaul',
+                            'kaizen_mekanik' => 'Kaizen Mekanik',
+                            'lain_lain' => 'Lain-lain'
+                        ];
+                    @endphp
+                    {{ $repairActionLabels[$breakdownReport->repair_action] ?? $breakdownReport->repair_action }}
+                </div>
+            </div>
+            @endif
         </div>
     </div>
     @endif

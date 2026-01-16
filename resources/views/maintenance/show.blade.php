@@ -76,6 +76,10 @@
                     <p class="mt-2 text-base text-navy-900 font-medium">{{ $breakdownReport->machine_number ?? '-' }}</p>
                 </div>
                 <div class="bg-navy-50 rounded-xl p-4 border border-navy-200">
+                    <label class="block text-sm font-medium text-navy-600">Posisi Kerusakan</label>
+                    <p class="mt-2 text-base text-navy-900 font-medium">{{ $breakdownReport->position ?? '-' }}</p>
+                </div>
+                <div class="bg-navy-50 rounded-xl p-4 border border-navy-200">
                     <label class="block text-sm font-medium text-navy-600">Status</label>
                     @php
                         $statusColors = [
@@ -125,6 +129,24 @@
                     <p class="mt-2 text-base text-navy-900 font-medium">{{ $breakdownReport->repair_end_at->format('d/m/Y H:i') }}</p>
                 </div>
                 @endif
+            </div>
+            @endif
+
+            @if($breakdownReport->repair_action)
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-navy-600 mb-4">Tindakan Perbaikan</label>
+                <div class="bg-navy-50 rounded-xl p-4 border border-navy-200">
+                    @php
+                        $repairActionLabels = [
+                            'penggantian_part' => 'Penggantian Part',
+                            'hanya_adjust' => 'Hanya Adjust',
+                            'overhaul' => 'Overhaul',
+                            'kaizen_mekanik' => 'Kaizen Mekanik',
+                            'lain_lain' => 'Lain-lain'
+                        ];
+                    @endphp
+                    <p class="text-base text-navy-900 font-medium">{{ $repairActionLabels[$breakdownReport->repair_action] ?? $breakdownReport->repair_action }}</p>
+                </div>
             </div>
             @endif
 

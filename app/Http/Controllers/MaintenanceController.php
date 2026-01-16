@@ -160,24 +160,32 @@ class MaintenanceController extends Controller
         }
 
         $validated = $request->validate([
+            'position' => 'required|string|max:200',
             'event_types' => 'required|array',
             'event_types.*' => 'exists:event_types,id',
+            'repair_action' => 'required|in:penggantian_part,hanya_adjust,overhaul,kaizen_mekanik,lain_lain',
             'cause_types' => 'required|array',
             'cause_types.*' => 'exists:cause_types,id',
             'parts' => 'nullable|array',
-            'parts.*.part_type_id' => 'required_with:parts|exists:part_types,id',
-            'parts.*.quantity' => 'required_with:parts|integer|min:1',
+            'parts.*.part_type_id' => 'nullable|exists:part_types,id',
+            'parts.*.quantity' => 'nullable|integer|min:1',
             'parts.*.notes' => 'nullable|string',
             'responsibility' => 'required|in:design_workshop,supplier_part,production_assy,operator_mtc,other',
             'responsibility_notes' => 'nullable|string',
             'machine_operational' => 'required|in:yes,no',
             'technician_notes' => 'nullable|string',
+        ], [
+            'parts.*.part_type_id.exists' => 'Part yang dipilih tidak valid.',
+            'parts.*.quantity.integer' => 'Jumlah part harus berupa angka.',
+            'parts.*.quantity.min' => 'Jumlah part minimal 1.',
         ]);
 
         // Update breakdown report
         $breakdownReport->update([
             'status' => 'done',
             'repair_end_at' => now(),
+            'position' => $validated['position'],
+            'repair_action' => $validated['repair_action'],
             'machine_operational' => $validated['machine_operational'],
             'technician_notes' => $validated['technician_notes'],
         ]);
@@ -193,14 +201,16 @@ class MaintenanceController extends Controller
             // Delete existing parts
             $breakdownReport->breakdownParts()->delete();
 
-            // Create new parts
+            // Create new parts - only if part_type_id is provided
             foreach ($validated['parts'] as $partData) {
-                BreakdownPart::create([
-                    'breakdown_report_id' => $breakdownReport->id,
-                    'part_type_id' => $partData['part_type_id'],
-                    'quantity' => $partData['quantity'],
-                    'notes' => $partData['notes'] ?? null,
-                ]);
+                if (!empty($partData['part_type_id']) && !empty($partData['quantity'])) {
+                    BreakdownPart::create([
+                        'breakdown_report_id' => $breakdownReport->id,
+                        'part_type_id' => $partData['part_type_id'],
+                        'quantity' => $partData['quantity'],
+                        'notes' => $partData['notes'] ?? null,
+                    ]);
+                }
             }
         }
 
