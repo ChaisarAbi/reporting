@@ -349,6 +349,14 @@ document.addEventListener('DOMContentLoaded', function() {
             scales: {
                 y: {
                     beginAtZero: true
+                },
+                x: {
+                    ticks: {
+                        // Ensure labels are displayed in the order they appear in data
+                        callback: function(value, index, values) {
+                            return this.getLabelForValue(value);
+                        }
+                    }
                 }
             }
         }
