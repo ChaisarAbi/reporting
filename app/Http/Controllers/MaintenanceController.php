@@ -26,6 +26,10 @@ class MaintenanceController extends Controller
             $statsQuery->where('status', $request->status);
         }
         
+        if ($request->filled('machine_id')) {
+            $statsQuery->where('machine_id', $request->machine_id);
+        }
+        
         if ($request->filled('date_from')) {
             $statsQuery->whereDate('reported_at', '>=', $request->date_from);
         }
@@ -49,6 +53,10 @@ class MaintenanceController extends Controller
             $recentQuery->where('status', $request->status);
         }
         
+        if ($request->filled('machine_id')) {
+            $recentQuery->where('machine_id', $request->machine_id);
+        }
+        
         if ($request->filled('date_from')) {
             $recentQuery->whereDate('reported_at', '>=', $request->date_from);
         }
@@ -61,8 +69,11 @@ class MaintenanceController extends Controller
             ->orderBy('reported_at', 'desc')
             ->limit(10)
             ->get();
+            
+        // Get all machines for filter dropdown
+        $machines = \App\Models\Machine::orderBy('name')->get();
 
-        return view('maintenance.dashboard', compact('stats', 'recentReports'));
+        return view('maintenance.dashboard', compact('stats', 'recentReports', 'machines'));
     }
 
     /**
@@ -90,8 +101,11 @@ class MaintenanceController extends Controller
         }
 
         $reports = $query->orderBy('reported_at', 'desc')->paginate(15)->appends(request()->query());
+        
+        // Get all machines for filter dropdown
+        $machines = \App\Models\Machine::orderBy('name')->get();
 
-        return view('maintenance.reports', compact('reports'));
+        return view('maintenance.reports', compact('reports', 'machines'));
     }
 
     /**

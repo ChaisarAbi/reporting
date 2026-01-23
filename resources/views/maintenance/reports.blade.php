@@ -24,6 +24,17 @@
                     </select>
                 </div>
                 <div>
+                    <label for="machine_id" class="block text-sm font-medium text-gray-700">Mesin</label>
+                    <select id="machine_id" name="machine_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">Semua Mesin</option>
+                        @foreach($machines as $machine)
+                            <option value="{{ $machine->id }}" {{ request('machine_id') == $machine->id ? 'selected' : '' }}>
+                                {{ $machine->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
                     <label for="date_from" class="block text-sm font-medium text-gray-700">Tanggal Dari</label>
                     <input type="date" id="date_from" name="date_from" value="{{ request('date_from') }}" 
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">

@@ -114,7 +114,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h4 class="text-sm font-medium text-navy-700">Filter Laporan</h4>
-                    <p class="text-xs text-navy-500">Filter laporan berdasarkan status</p>
+                    <p class="text-xs text-navy-500">Filter laporan berdasarkan status dan mesin</p>
                 </div>
                 <form method="GET" action="{{ route('operator.dashboard') }}" class="flex items-center space-x-4">
                     <div>
@@ -124,6 +124,17 @@
                             <option value="new" {{ request('status') == 'new' ? 'selected' : '' }}>Baru</option>
                             <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>Sedang Diperbaiki</option>
                             <option value="done" {{ request('status') == 'done' ? 'selected' : '' }}>Selesai</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="machine_id" class="sr-only">Mesin</label>
+                        <select id="machine_id" name="machine_id" class="rounded-lg border-navy-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                            <option value="">Semua Mesin</option>
+                            @foreach($machines as $machine)
+                                <option value="{{ $machine->id }}" {{ request('machine_id') == $machine->id ? 'selected' : '' }}>
+                                    {{ $machine->name }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                     <div>

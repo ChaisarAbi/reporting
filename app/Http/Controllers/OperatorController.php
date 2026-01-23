@@ -24,6 +24,10 @@ class OperatorController extends Controller
             $statsQuery->where('status', $request->status);
         }
         
+        if ($request->filled('machine_id')) {
+            $statsQuery->where('machine_id', $request->machine_id);
+        }
+        
         $stats = [
             'total_reports' => $statsQuery->count(),
             'new_reports' => $statsQuery->clone()->where('status', 'new')->count(),
@@ -39,12 +43,19 @@ class OperatorController extends Controller
             $reportsQuery->where('status', $request->status);
         }
         
+        if ($request->filled('machine_id')) {
+            $reportsQuery->where('machine_id', $request->machine_id);
+        }
+        
         $reports = $reportsQuery->with('machine')
             ->orderBy('reported_at', 'desc')
             ->paginate(10)
             ->appends(request()->query());
+            
+        // Get all machines for filter dropdown
+        $machines = Machine::orderBy('name')->get();
 
-        return view('operator.dashboard', compact('reports', 'stats'));
+        return view('operator.dashboard', compact('reports', 'stats', 'machines'));
     }
 
     /**
