@@ -280,8 +280,8 @@ class MaintenanceController extends Controller
             ->orderBy('year', 'desc')
             ->orderBy('month', 'desc')
             ->limit(12)
-            ->get();
-        // No reverse - chart generator will put index 0 at left (newest month)
+            ->get()
+            ->reverse(); // Reverse to show oldest (12 months back) at left, newest at right
 
         // Get machine breakdown frequency with total downtime (all reports)
         $machineBreakdowns = (clone $baseQuery)->selectRaw('
@@ -406,8 +406,8 @@ class MaintenanceController extends Controller
                 ->orderBy('year', 'desc')
                 ->orderBy('month', 'desc')
                 ->limit(12)
-                ->get();
-            // No reverse - chart generator will put index 0 at left (newest month)
+                ->get()
+                ->reverse(); // Reverse to show oldest (12 months back) at left, newest at right
         }
 
         // Get machine breakdown frequency with filters and total downtime
@@ -678,8 +678,8 @@ class MaintenanceController extends Controller
             ->orderBy('year', 'desc')
             ->orderBy('month', 'desc')
             ->limit(12)
-            ->get();
-        // No reverse - chart generator will put index 0 at left (newest month)
+            ->get()
+            ->reverse(); // Reverse to show oldest (12 months back) at left, newest at right
 
         // Get machine breakdown frequency - create fresh query from base
         $machineBreakdowns = (clone $baseQuery)->selectRaw('
