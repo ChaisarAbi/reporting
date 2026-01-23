@@ -262,8 +262,8 @@ class MaintenanceController extends Controller
                 AVG(TIMESTAMPDIFF(MINUTE, repair_start_at, repair_end_at)) as avg_repair_time
             ')
             ->groupByRaw('YEAR(reported_at), MONTH(reported_at)')
-            ->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
             ->limit(12)
             ->get();
 
@@ -375,8 +375,8 @@ class MaintenanceController extends Controller
                     AVG(TIMESTAMPDIFF(MINUTE, repair_start_at, repair_end_at)) as avg_repair_time
                 ')
                 ->groupByRaw('YEAR(reported_at), MONTH(reported_at)')
-                ->orderBy('year', 'desc')
-                ->orderBy('month', 'desc')
+                ->orderBy('year', 'asc')
+                ->orderBy('month', 'asc')
                 ->get();
         } else {
             // Default: last 12 months
@@ -387,8 +387,8 @@ class MaintenanceController extends Controller
                     AVG(TIMESTAMPDIFF(MINUTE, repair_start_at, repair_end_at)) as avg_repair_time
                 ')
                 ->groupByRaw('YEAR(reported_at), MONTH(reported_at)')
-                ->orderBy('year', 'desc')
-                ->orderBy('month', 'desc')
+                ->orderBy('year', 'asc')
+                ->orderBy('month', 'asc')
                 ->limit(12)
                 ->get();
         }
@@ -657,8 +657,8 @@ class MaintenanceController extends Controller
                 AVG(TIMESTAMPDIFF(MINUTE, repair_start_at, repair_end_at)) as avg_repair_time
             ')
             ->groupByRaw('YEAR(reported_at), MONTH(reported_at)')
-            ->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
             ->limit(12)
             ->get();
 
