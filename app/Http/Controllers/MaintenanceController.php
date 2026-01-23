@@ -269,6 +269,7 @@ class MaintenanceController extends Controller
         }
 
         // Get monthly breakdown statistics (only for done reports)
+        // Get last 12 months from the latest date in data
         $monthlyStats = (clone $baseQuery)->selectRaw('
                 YEAR(reported_at) as year,
                 MONTH(reported_at) as month,
@@ -276,10 +277,11 @@ class MaintenanceController extends Controller
                 AVG(TIMESTAMPDIFF(MINUTE, repair_start_at, repair_end_at)) as avg_repair_time
             ')
             ->groupByRaw('YEAR(reported_at), MONTH(reported_at)')
-            ->orderBy('year', 'asc')
-            ->orderBy('month', 'asc')
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc')
             ->limit(12)
-            ->get();
+            ->get()
+            ->reverse(); // Reverse to show oldest to newest in chart (left to right: newest → oldest)
 
         // Get machine breakdown frequency with total downtime (all reports)
         $machineBreakdowns = (clone $baseQuery)->selectRaw('
@@ -393,7 +395,7 @@ class MaintenanceController extends Controller
                 ->orderBy('month', 'asc')
                 ->get();
         } else {
-            // Default: last 12 months
+            // Default: last 12 months from the latest date
             $monthlyStats = (clone $baseQuery)->selectRaw('
                     YEAR(reported_at) as year,
                     MONTH(reported_at) as month,
@@ -401,10 +403,11 @@ class MaintenanceController extends Controller
                     AVG(TIMESTAMPDIFF(MINUTE, repair_start_at, repair_end_at)) as avg_repair_time
                 ')
                 ->groupByRaw('YEAR(reported_at), MONTH(reported_at)')
-                ->orderBy('year', 'asc')
-                ->orderBy('month', 'asc')
+                ->orderBy('year', 'desc')
+                ->orderBy('month', 'desc')
                 ->limit(12)
-                ->get();
+                ->get()
+                ->reverse(); // Reverse to show oldest to newest in chart
         }
 
         // Get machine breakdown frequency with filters and total downtime
@@ -664,6 +667,7 @@ class MaintenanceController extends Controller
         }
 
         // Get monthly breakdown statistics - create fresh query from base
+        // Get last 12 months from the latest date
         $monthlyStats = (clone $baseQuery)->selectRaw('
                 YEAR(reported_at) as year,
                 MONTH(reported_at) as month,
@@ -671,10 +675,11 @@ class MaintenanceController extends Controller
                 AVG(TIMESTAMPDIFF(MINUTE, repair_start_at, repair_end_at)) as avg_repair_time
             ')
             ->groupByRaw('YEAR(reported_at), MONTH(reported_at)')
-            ->orderBy('year', 'asc')
-            ->orderBy('month', 'asc')
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc')
             ->limit(12)
-            ->get();
+            ->get()
+            ->reverse(); // Reverse to show oldest to newest in chart
 
         // Get machine breakdown frequency - create fresh query from base
         $machineBreakdowns = (clone $baseQuery)->selectRaw('
