@@ -83,6 +83,11 @@ class OperatorController extends Controller
         ]);
 
         $validated['reporter_id'] = Auth::id();
+        
+        // Explicitly set reported_at using Laravel's timezone-aware now() helper
+        // This ensures the timestamp is created using the application timezone (Asia/Jakarta)
+        // instead of relying on the database server's timezone
+        $validated['reported_at'] = now();
 
         BreakdownReport::create($validated);
 
